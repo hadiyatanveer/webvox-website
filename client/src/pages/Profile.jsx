@@ -3,9 +3,11 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import { AuthContext } from '../context/AuthContext';
 import '../styles/Auth.css'; // Reusing our nice card styles!
+ 
+export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
 const Profile = () => {
-    const { user, login } = useContext(AuthContext); // Use login to update context state
+    const { login } = useContext(AuthContext); // Use login to update context state
     const [profileData, setProfileData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [uploading, setUploading] = useState(false);
@@ -14,7 +16,7 @@ const Profile = () => {
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const res = await axios.get('http://localhost:5000/api/user/profile');
+                const res = await axios.get(`${API_URL}/api/user/profile`);
                 setProfileData(res.data);
             } catch (error) {
                 setMessage({ text: 'Failed to load profile data.', type: 'error' });
@@ -43,7 +45,7 @@ const Profile = () => {
         reader.onloadend = async () => {
             const base64Image = reader.result;
             try {
-                const res = await axios.put('http://localhost:5000/api/user/profile', { logo: base64Image });
+                const res = await axios.put(`${API_URL}/api/user/profile`, { logo: base64Image });
                 setProfileData(res.data.company);
 
                 // Update global user state so Navbar updates instantly

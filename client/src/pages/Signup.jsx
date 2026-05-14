@@ -39,7 +39,7 @@ const Signup = () => {
         setLoading(true);
 
         try {
-            const res = await axios.post('/api/auth/signup', formData);
+            const res = await axios.post(`${API_URL}/api/auth/signup`, formData);
             login(res.data.token, res.data.company);
             navigate('/');
         } catch (err) {

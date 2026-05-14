@@ -6,7 +6,7 @@ import { AuthContext } from '../context/AuthContext';
 import '../styles/Auth.css';
 
 // client/src/config.js
-export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const Login = () => {
     const [formData, setFormData] = useState({ email: '', password: '' });
@@ -27,7 +27,7 @@ const Login = () => {
 
         try {
             // Pointing to your Node.js backend
-            const res = await axios.post('/api/auth/login', formData);
+            const res = await axios.post(`${API_URL}/api/auth/login`, formData);
             login(res.data.token, res.data.company);
             navigate('/'); // Redirect to protected route
         } catch (err) {
