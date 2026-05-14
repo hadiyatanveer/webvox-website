@@ -1,17 +1,30 @@
-// server/config/db.js
 const mongoose = require('mongoose');
 
-const connectDB = async () => {
-    try {
-        const conn = await mongoose.connect(process.env.MONGODB_URI);
+let cached = global.mongoose;
 
-        console.log(`MongoDB Connected Successfully: ${conn.connection.host}`);
-        console.log(`Database Name: ${conn.connection.name}`);
-    } catch (error) {
-        console.error(`Error connecting to MongoDB: ${error.message}`);
-        // Exit process with failure
-        process.exit(1);
+if (!cached) {
+    cached = global.mongoose = { conn: null, promise: null };
+}
+
+async function connectDB() {
+    if (cached.conn) {
+        return cached.conn; // ✅ reuse existing connection
     }
-};
+
+    if (!cached.promise) {
+        const opts = {
+            bufferCommands: false,
+            serverSelectionTimeoutMS: 10000,
+            socketTimeoutMS: 45000,
+        };
+
+        cached.promise = mongoose.connect(process.env.MONGODB_URI, opts).then((mongoose) => {
+            return mongoose;
+        });
+    }
+
+    cached.conn = await cached.promise;
+    return cached.conn;
+}
 
 module.exports = connectDB;

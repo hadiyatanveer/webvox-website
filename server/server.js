@@ -7,7 +7,10 @@ const connectDB = require('./config/db');
 dotenv.config();
 
 // Connect to MongoDB Atlas
-connectDB();
+app.use(async (req, res, next) => {
+    await connectDB();
+    next();
+});
 
 const app = express();
 
