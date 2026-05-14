@@ -6,7 +6,7 @@ import { AuthContext } from '../context/AuthContext';
 import '../styles/Auth.css';
 
 // client/src/config.js
-export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+export const API_URL = import.meta.env.VITE_API_URL;
 
 const Signup = () => {
     const [formData, setFormData] = useState({

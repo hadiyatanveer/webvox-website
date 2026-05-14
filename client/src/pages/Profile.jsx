@@ -3,8 +3,8 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import { AuthContext } from '../context/AuthContext';
 import '../styles/Auth.css'; // Reusing our nice card styles!
- 
-export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+
+export const API_URL = import.meta.env.VITE_API_URL;
 
 const Profile = () => {
     const { login } = useContext(AuthContext); // Use login to update context state

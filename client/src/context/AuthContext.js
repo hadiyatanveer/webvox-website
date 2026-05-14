@@ -1,6 +1,8 @@
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -16,7 +18,7 @@ export const AuthProvider = ({ children }) => {
                     // Set default axios header
                     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
                     // Fetch real user data from the backend to persist profile details across reloads
-                    const res = await axios.get('http://localhost:5000/api/user/profile');
+                    const res = await axios.get(`${API_URL}/api/user/profile`);
                     setUser(res.data);
                 } catch (error) {
                     localStorage.removeItem('token');
