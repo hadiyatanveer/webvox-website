@@ -1,0 +1,67 @@
+/* client/src/index.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* --- Design System Variables --- */
+:root {
+  /* Primary Palette */
+  --color-deep-blue: #0052CC;
+  --color-dark-blue: #0041A6;
+  --color-electric-purple: #6B2CBF;
+  --color-deep-purple: #5A189A;
+
+  /* Neutrals */
+  --color-white: #FFFFFF;
+  --color-off-white: #F8F9FC;
+  --color-light-gray: #E8EBF5;
+  --color-dark-gray: #2C3E50;
+
+  /* Accents (For Hero Orb later) */
+  --color-warm-orange: #FF6B35;
+  --color-golden-yellow: #FFC300;
+
+  /* Shadows (Optimized) */
+  --shadow-sm: 0 2px 4px rgba(44, 62, 80, 0.05);
+  --shadow-md: 0 10px 25px rgba(44, 62, 80, 0.1);
+  --shadow-lg: 0 20px 40px rgba(0, 65, 166, 0.15);
+
+  /* Transitions */
+  --transition-fast: 0.15s ease-out;
+  --transition-normal: 0.3s ease;
+}
+
+/* --- Base Reset & Typography --- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--color-off-white);
+  color: var(--color-dark-gray);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--color-dark-gray);
+}
+
+/* --- Performance & Accessibility --- */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
