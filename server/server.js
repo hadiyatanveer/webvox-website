@@ -15,8 +15,13 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // Middleware
-app.use(cors());
-app.use(express.json()); // Allows server to read JSON from the frontend
+app.use(cors({
+    origin: [
+        'http://localhost:5173',
+        'https://webvox-website.vercel.app/'
+    ],
+    credentials: true
+}));
 
 // --- NEW: Add the Authentication Routes ---
 app.use('/api/auth', require('./routes/auth'));
@@ -29,7 +34,8 @@ app.get('/api/health', (req, res) => {
 });
 
 if (process.env.NODE_ENV !== 'production') {
-    app.listen(4000, () => console.log('Server on port 4000'));
+    app.listen(process.env.PORT || 4000, () => console.log('Running locally'));
 }
+
 
 module.exports = app;
