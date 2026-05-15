@@ -17,24 +17,27 @@ const connectDB = async () => {
 
     connectionPromise = (async () => {
         try {
-            await mongoose.connect(process.env.MONGODB_URI, {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-                // Vercel-specific settings
-                serverSelectionTimeoutMS: 10000,      // Increased from 5000ms
-                socketTimeoutMS: 60000,               // Increased from 45000ms
-                maxPoolSize: 10,                      // Connection pooling
+            // Mongoose 9.x uses different connection options
+            const connection = await mongoose.connect(process.env.MONGODB_URI, {
+                // Connection pool settings
+                maxPoolSize: 10,
                 minPoolSize: 2,
+
+                // Timeout settings (Mongoose 9 compatible)
+                serverSelectionTimeoutMS: 15000,
+                socketTimeoutMS: 75000,
+
+                // Retry logic
                 retryWrites: true,
                 retryReads: true,
-                // Keep-alive settings
-                socketKeepAliveTimeout: 45000,
-                family: 4,                            // Use IPv4 (more reliable on Vercel)
+
+                // Network settings
+                family: 4,  // IPv4 (more reliable on Vercel)
             });
 
             isConnected = true;
             console.log('✓ MongoDB connected successfully');
-            return true;
+            return connection;
         } catch (error) {
             console.error('✗ MongoDB connection error:', error.message);
             isConnected = false;
@@ -46,9 +49,9 @@ const connectDB = async () => {
     return connectionPromise;
 };
 
-// Handle connection errors
+// Handle connection events
 mongoose.connection.on('error', (err) => {
-    console.error('MongoDB connection error:', err);
+    console.error('MongoDB connection error:', err.message);
     isConnected = false;
 });
 
@@ -56,6 +59,11 @@ mongoose.connection.on('disconnected', () => {
     console.warn('MongoDB disconnected');
     isConnected = false;
     connectionPromise = null;
+});
+
+mongoose.connection.on('reconnected', () => {
+    console.log('MongoDB reconnected');
+    isConnected = true;
 });
 
 module.exports = connectDB;
