@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { AuthContext } from '../context/AuthContext';
 import '../styles/Auth.css'; // Reusing our nice card styles!
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://webvox-website-backend.vercel.app/';
 
 const Profile = () => {
     const { login } = useContext(AuthContext); // Use login to update context state
