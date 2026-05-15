@@ -13,14 +13,44 @@ const app = express();
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
-// CORS middleware
-app.use(cors({
-    origin: [
-        'http://localhost:5173',
-        'https://webvox-website-backend.vercel.app'
-    ],
-    credentials: true
-}));
+// CORS middleware - Allow Vercel deployments
+const corsOptions = {
+    origin: function (origin, callback) {
+        // Allowed origins
+        const allowedOrigins = [
+            'http://localhost:5173',
+            'http://localhost:3000',
+            'https://webvox-website.vercel.app',
+            // Allow all Vercel preview deployments
+            /https:\/\/.*\.vercel\.app$/
+        ];
+
+        // If no origin (mobile app, Postman, etc), allow it
+        if (!origin) return callback(null, true);
+
+        // Check if origin is allowed
+        const isAllowed = allowedOrigins.some(allowedOrigin => {
+            if (allowedOrigin instanceof RegExp) {
+                return allowedOrigin.test(origin);
+            }
+            return allowedOrigin === origin;
+        });
+
+        if (isAllowed) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
+
+// Handle preflight requests
+app.options('*', cors(corsOptions));
 
 // Connect to MongoDB Atlas ONCE at startup
 let dbConnected = false;
@@ -31,10 +61,9 @@ connectDB()
     })
     .catch(err => {
         console.error('Initial database connection failed:', err.message);
-        // App will still start, but requests requiring DB will fail gracefully
     });
 
-// Health check that reports DB status
+// Health check route
 app.get('/api/health', (req, res) => {
     res.status(200).json({
         status: 'success',
@@ -43,7 +72,7 @@ app.get('/api/health', (req, res) => {
     });
 });
 
-// Root route - API info
+// Root route
 app.get('/', (req, res) => {
     res.status(200).json({
         status: 'success',
@@ -56,17 +85,24 @@ app.get('/', (req, res) => {
     });
 });
 
-// Routes - Ensure DB is connected
+// Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/user', require('./routes/user'));
 
-// Error handling middleware for timeout/connection errors
+// Error handling middleware
 app.use((err, req, res, next) => {
     console.error('Request error:', err.message);
 
+    if (err.message === 'Not allowed by CORS') {
+        return res.status(403).json({
+            message: 'CORS error: Origin not allowed',
+            error: 'CORS_ERROR'
+        });
+    }
+
     if (err.message.includes('timeout') || err.message.includes('ECONNREFUSED')) {
         return res.status(503).json({
-            message: 'Database connection timeout. Please try again.',
+            message: 'Database connection timeout',
             error: 'SERVICE_UNAVAILABLE'
         });
     }
