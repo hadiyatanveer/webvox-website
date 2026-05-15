@@ -6,7 +6,7 @@ import { AuthContext } from '../context/AuthContext';
 import '../styles/Auth.css';
 
 // client/src/config.js
-export const API_URL = import.meta.env.NEXT_PUBLIC_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const Signup = () => {
     const [formData, setFormData] = useState({

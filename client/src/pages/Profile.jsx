@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { AuthContext } from '../context/AuthContext';
 import '../styles/Auth.css'; // Reusing our nice card styles!
 
-export const API_URL = import.meta.env.NEXT_PUBLIC_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const Profile = () => {
     const { login } = useContext(AuthContext); // Use login to update context state
