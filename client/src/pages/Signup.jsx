@@ -6,7 +6,7 @@ import { AuthContext } from '../context/AuthContext';
 import '../styles/Auth.css';
 
 // client/src/config.js
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://webvox-website-backend.vercel.app/';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://webvox-website-backend.vercel.app';
 
 const Signup = () => {
     const [formData, setFormData] = useState({
